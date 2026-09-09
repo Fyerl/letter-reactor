@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>字母反应器 A–R · 多字母挑战版</title>
+<style>
+:root{--teal:#08a6a6;--dark:#067c80;--ink:#263238;--coral:#ff6b6b;--yellow:#ffd166;--blue:#4d96ff;--purple:#8b5cf6;--green:#5ccb8a}*{box-sizing:border-box;-webkit-user-select:none;user-select:none}body{margin:0;background:var(--teal);font-family:"Arial Rounded MT Bold","PingFang SC",sans-serif;color:var(--ink);overflow:hidden}main{width:100vw;height:100vh;padding:1.25vh 1.05vw;display:grid;grid-template-columns:2.35fr 1fr;gap:1vw}.panel{background:#fff;border-radius:2vw;box-shadow:0 .48vw 0 rgba(0,80,84,.2);overflow:hidden}.game{display:grid;grid-template-rows:auto 1fr auto;padding:1vw}header{display:grid;grid-template-columns:auto 1fr;gap:.65vw 1vw;align-items:center}h1{font-size:1.85vw;color:var(--dark);margin:0;white-space:nowrap}button{border:0;border-radius:.9vw;font:700 1vw "Arial Rounded MT Bold","PingFang SC",sans-serif;padding:.62vw .82vw;cursor:pointer;touch-action:manipulation}.modeRow,.levelRow{display:flex;gap:.42vw;align-items:center;justify-content:flex-end}.mode{background:#eaf6ff;color:var(--blue)}.mode.active{background:var(--blue);color:#fff;box-shadow:inset 0 -.2vw 0 rgba(0,0,0,.12)}.levelLabel{font-size:.92vw;color:#617177;font-family:"PingFang SC",sans-serif;font-weight:700}.level{background:#fff8da;color:#c17d00;min-width:3.15vw}.level.active{background:var(--yellow);color:#6b4900}.stage{margin:.75vw 0;border-radius:1.6vw;background:linear-gradient(135deg,#fff8da,#fff0f4);display:grid;place-items:center;position:relative;min-height:0;overflow:hidden}#prompt{width:88%;display:flex;align-items:center;justify-content:center;gap:1.1vw;flex-wrap:nowrap;text-align:center}.promptItem{min-width:0;flex:1 1 0;max-width:9.5vw;height:min(12.2vw,25vh);border-radius:1.5vw;background:#fff;display:grid;place-items:center;padding:.35vw;color:var(--purple);font-size:min(8.7vw,18vh);font-weight:900;line-height:.85;box-shadow:0 .35vw 0 rgba(139,92,246,.16)}.promptItem.sound{font-size:min(4.7vw,10vh);color:var(--blue)}.promptItem.emoji{font-size:min(6.6vw,14vh)}.promptItem.audio{max-width:13vw;font-size:min(6.2vw,13vh);color:var(--coral)}#caption{position:absolute;left:3%;right:3%;bottom:3.5%;text-align:center;font-size:1.38vw;color:var(--dark)}#timer{position:absolute;right:1.8%;top:3%;width:3.7vw;height:3.7vw;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-size:1.8vw;z-index:2}#message{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,255,255,.92);font-size:4.3vw;font-weight:900;color:var(--green);text-align:center;z-index:3}.controls{display:grid;grid-template-columns:1fr 1fr 1fr 1.35fr;gap:.58vw}.control{font-size:1.2vw;padding:.85vw}.replay{background:#eaf6ff;color:var(--blue)}.reveal{background:#fff8da;color:#bd7800}.check{background:var(--purple);color:#fff}.next{background:var(--green);color:#fff}aside{display:grid;grid-template-rows:auto 1fr auto;gap:.66vw;padding:.85vw}.score{display:grid;grid-template-columns:1fr 1fr;gap:.55vw}.team{border-radius:1.1vw;color:#fff;padding:.5vw;text-align:center;font-size:.9vw}.team strong{display:block;font-size:2vw;line-height:1}.red{background:var(--coral)}.blue{background:var(--blue)}.scoreBtns{display:flex;justify-content:center;gap:.35vw;margin-top:.18vw}.scoreBtns button{padding:.12vw .5vw;font-size:.96vw;background:rgba(255,255,255,.9);color:var(--ink)}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.37vw;align-content:center}.letter{aspect-ratio:1.42;border-radius:.85vw;background:#f0faf9;color:var(--dark);font-size:1.85vw;padding:0;border:.13vw solid #b8e6e3;transition:.12s transform,.12s background,.12s color}.letter:nth-child(5n+1){color:var(--coral)}.letter:nth-child(5n+2){color:#d49300}.letter:nth-child(5n+3){color:var(--green)}.letter:nth-child(5n+4){color:var(--blue)}.letter:nth-child(5n){color:var(--purple)}.letter.selected{background:var(--purple);border-color:var(--purple);color:#fff;transform:scale(.94);box-shadow:0 0 0 .15vw #fff,0 0 0 .3vw var(--purple)}.letter:active{transform:scale(.91)}.tips{background:#f0faf9;border-radius:.9vw;padding:.52vw .65vw;font:600 .73vw "PingFang SC",sans-serif;line-height:1.42;color:#617177}.tips b{color:var(--dark)}#picked{font-weight:800;color:var(--purple)}
+button:focus-visible{outline:3px solid #263238;outline-offset:3px}
+button:disabled{cursor:default;opacity:.7}
+main{height:100dvh}
+#message{font-size:clamp(24px,4.3vw,68px);padding:16px}
+.promptItem.emoji{grid-template-rows:1fr auto;gap:4px;padding-bottom:8px}
+.promptItem small{font:700 clamp(12px,1.4vw,24px) "PingFang SC",sans-serif;line-height:1.2;color:var(--dark)}
+@media(max-width:1000px){
+ body{overflow:auto}
+ main{height:auto;min-height:100dvh;grid-template-columns:minmax(0,2fr) minmax(230px,1fr);gap:10px;padding:10px}
+ .panel{border-radius:18px}.game{padding:12px;min-height:520px;grid-template-rows:auto minmax(200px,1fr) auto}
+ header{grid-template-columns:1fr;gap:10px}header>div:empty{display:none}
+ h1{font-size:24px}.modeRow,.levelRow{justify-content:flex-start;flex-wrap:wrap;gap:6px}
+ button{font-size:14px;padding:10px;border-radius:9px;min-height:40px}
+ .levelLabel{font-size:14px}.level{min-width:44px}
+ .stage{margin:12px 0;border-radius:16px;min-height:240px}
+ #prompt{width:92%;gap:8px;margin-bottom:28px}
+ .promptItem{height:110px;max-width:100px;border-radius:14px;font-size:72px}
+ .promptItem.sound{font-size:34px}.promptItem.emoji{font-size:48px}.promptItem.audio{max-width:140px;font-size:68px}
+ #caption{font-size:16px;bottom:12px;line-height:1.45}
+ #timer{width:40px;height:40px;font-size:22px}
+ .controls{grid-template-columns:1fr 1fr;gap:8px}.control{font-size:16px;padding:12px 6px;min-height:44px}
+ aside{padding:12px;gap:12px}.score{gap:8px}.team{border-radius:12px;font-size:14px;padding:8px}.team strong{font-size:28px}
+ .scoreBtns{gap:6px;margin-top:6px}.scoreBtns button{font-size:20px;min-width:40px;min-height:40px;padding:4px}
+ .grid{gap:8px}.letter{border-radius:9px;font-size:24px;min-height:44px;border-width:2px}
+ .letter.selected{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--purple)}
+ .tips{font-size:14px;line-height:1.5;padding:10px;border-radius:9px}
+}
+@media(max-width:620px){
+ main{grid-template-columns:minmax(0,1fr);padding:8px;gap:10px}
+ .game{min-height:0;grid-template-rows:auto minmax(210px,1fr) auto}
+ h1{font-size:22px}.modeRow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .modeRow button{font-size:14px;padding:9px 3px}.levelRow{gap:5px}
+ .stage{min-height:210px}.promptItem{height:90px;font-size:56px}
+ .promptItem.sound{font-size:26px}.promptItem.emoji{font-size:40px}.promptItem small{font-size:12px}
+ #caption{font-size:14px}#prompt{gap:6px}#timer{width:34px;height:34px;font-size:19px}
+ aside{grid-template-rows:auto auto auto}.grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+ .letter{aspect-ratio:1;min-width:0;font-size:22px}.team{font-size:14px}
+}
+
+
+</style></head><body><main>
+<section class="panel game"><header><h1>⚡ 字母反应器 A–R</h1><div class="modeRow"><button aria-pressed="true" class="mode active" data-mode="flash">闪视</button><button aria-pressed="false" class="mode" data-mode="sound">看首音</button><button aria-pressed="false" class="mode" data-mode="picture">看图片</button><button aria-pressed="false" class="mode" data-mode="listenName">听字母名</button><button aria-pressed="false" class="mode" data-mode="listenSound">听单词首音</button></div><div></div><div class="levelRow"><span class="levelLabel">一次出现：</span><button aria-pressed="true" class="level active" data-level="1">1个</button><button aria-pressed="false" class="level" data-level="2">2个</button><button aria-pressed="false" class="level" data-level="3">3个</button><button aria-pressed="false" class="level" data-level="4">4个</button></div></header>
+<div class="stage"><div id="timer">5</div><div id="prompt"></div><div id="caption">看清楚，马上会消失！</div><div id="message" role="status" aria-live="polite"></div></div>
+<div class="controls"><button class="control replay" id="replayBtn">🔊 再看／再听</button><button class="control reveal" id="revealBtn">👀 看答案</button><button class="control check" id="checkBtn">✓ 提交答案</button><button class="control next" id="nextBtn">下一题 ▶</button></div></section>
+<aside class="panel"><div class="score"><div class="team red">RED TEAM<strong id="redScore">0</strong><div class="scoreBtns"><button data-team="red" data-delta="-1">−</button><button data-team="red" data-delta="1">＋</button></div></div><div class="team blue">BLUE TEAM<strong id="blueScore">0</strong><div class="scoreBtns"><button data-team="blue" data-delta="-1">−</button><button data-team="blue" data-delta="1">＋</button></div></div></div><div class="grid" id="grid"></div><div class="tips"><b>已选：</b><span id="picked">0/1</span>。选择字母后提交，可取消重选。<br>倒计时只作课堂提示，归零后仍可答题。队伍分数由老师手动加减。<br>快捷键：空格下一题，P 重播，Q 红队加分，W 蓝队加分。</div></aside>
+</main><script>
+const DATA={A:{phoneme:'/æ/',emoji:'🍎',word:'apple'},B:{phoneme:'/b/',emoji:'⚽',word:'ball'},C:{phoneme:'/k/',emoji:'🐱',word:'cat'},D:{phoneme:'/d/',emoji:'🐶',word:'dog'},E:{phoneme:'/e/',emoji:'🥚',word:'egg'},F:{phoneme:'/f/',emoji:'🐟',word:'fish'},G:{phoneme:'/g/',emoji:'🐐',word:'goat'},H:{phoneme:'/h/',emoji:'🎩',word:'hat'},I:{phoneme:'/ɪ/',emoji:'🐞',word:'insect'},J:{phoneme:'/dʒ/',emoji:'✈️',word:'jet'},K:{phoneme:'/k/',emoji:'🪁',word:'kite'},L:{phoneme:'/l/',emoji:'🦁',word:'lion'},M:{phoneme:'/m/',emoji:'🐒',word:'monkey'},N:{phoneme:'/n/',emoji:'👃',word:'nose'},O:{phoneme:'/ɒ/',emoji:'🐙',word:'octopus'},P:{phoneme:'/p/',emoji:'🐷',word:'pig'},Q:{phoneme:'/kw/',emoji:'👑',word:'queen'},R:{phoneme:'/r/',emoji:'🐰',word:'rabbit'}};
+let mode = 'flash', level = 1, targets = ['A'];
+let selected = new Set(), score = {red: 0, blue: 0}, lastKey = '';
+let timerId = null, flashId = null, messageId = null, resultId = null;
+let roundId = 0, audioId = 0, locked = false;
+const letters = Object.keys(DATA);
+const $ = selector => document.querySelector(selector);
+const prompt = $('#prompt'), caption = $('#caption'), timer = $('#timer');
+const message = $('#message'), grid = $('#grid'), picked = $('#picked');
+
+letters.forEach(letter => {
+  const button = document.createElement('button');
+  button.className = 'letter';
+  button.textContent = letter;
+  button.dataset.letter = letter;
+  button.setAttribute('aria-pressed', 'false');
+  button.onclick = () => toggle(letter, button);
+  grid.appendChild(button);
+});
+
+function chooseTargets() {
+  const pool = letters.slice(), chosen = [];
+  while (chosen.length < level) {
+    chosen.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+  }
+  // Avoid recursive retries, including with a deterministic random source.
+  if (chosen.slice().sort().join('') === lastKey && pool.length) {
+    chosen[chosen.length - 1] = pool[Math.floor(Math.random() * pool.length)];
+  }
+  lastKey = chosen.slice().sort().join('');
+  return chosen;
+}
+
+function stopFlash() { clearTimeout(flashId); flashId = null; }
+function stopAudio() {
+  audioId++;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+function resetRound() {
+  roundId++;
+  clearInterval(timerId);
+  stopFlash();
+  clearTimeout(messageId);
+  clearTimeout(resultId);
+  stopAudio();
+  locked = false;
+  message.style.display = 'none';
+  $('#checkBtn').disabled = false;
+  document.querySelectorAll('.letter').forEach(b => b.disabled = false);
+}
+function setMode(value) {
+  if (!['flash', 'sound', 'picture', 'listenName', 'listenSound'].includes(value)) return;
+  mode = value;
+  document.querySelectorAll('.mode').forEach(b => {
+    const active = b.dataset.mode === mode;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
+  next();
+}
+function setLevel(value) {
+  if (![1, 2, 3, 4].includes(value)) return;
+  level = value;
+  document.querySelectorAll('.level').forEach(b => {
+    const active = Number(b.dataset.level) === level;
+    b.classList.toggle('active', active);
+    b.setAttribute('aria-pressed', String(active));
+  });
+  next();
+}
+function item(value, kind = '') {
+  const element = document.createElement('div');
+  element.className = 'promptItem ' + kind;
+  element.textContent = value;
+  return element;
+}
+function render() {
+  stopFlash();
+  prompt.replaceChildren();
+  if (mode === 'flash') {
+    targets.forEach(l => prompt.appendChild(item(l)));
+    caption.textContent = `记住这 ${level} 个字母，马上会消失！`;
+    const current = roundId;
+    flashId = setTimeout(() => { if (current === roundId) hide(); }, 1100 + level * 230);
+  } else if (mode === 'sound') {
+    targets.forEach(l => prompt.appendChild(item(DATA[l].phoneme, 'sound')));
+    caption.textContent = '按首音选择字母；/k/ 可以选 C 或 K';
+  } else if (mode === 'picture') {
+    targets.forEach(l => {
+      const card = item('', 'emoji');
+      const symbol = document.createElement('span');
+      symbol.textContent = DATA[l].emoji;
+      const label = document.createElement('small');
+      label.textContent = DATA[l].word;
+      card.append(symbol, label);
+      prompt.appendChild(card);
+    });
+    caption.textContent = '按图片下方的英文词，选择它的首字母';
+  } else {
+    prompt.appendChild(item('🔊', 'audio'));
+    caption.textContent = mode === 'listenName'
+      ? `听 ${level} 个字母名，再选择字母`
+      : `听 ${level} 个英文单词，选择它们的首字母`;
+    // Start within the user's click; delayed speech can be blocked on touch devices.
+    playAudio();
+  }
+}
+function hide() {
+  prompt.replaceChildren(item('?'));
+  caption.textContent = `全班先作答，再选择 ${level} 个字母`;
+}
+function answerLabels() {
+  return targets.map(l => mode === 'sound' && DATA[l].phoneme === '/k/' ? 'C / K' : l);
+}
+function reveal() {
+  if (locked) return;
+  stopFlash();
+  stopAudio();
+  const answers = answerLabels();
+  prompt.replaceChildren();
+  answers.forEach(l => prompt.appendChild(item(l, l.length > 1 ? 'sound' : '')));
+  caption.textContent = '答案：' + answers.join(' · ')
+    + (mode === 'sound' && targets.filter(l => DATA[l].phoneme === '/k/').length === 2
+      ? '（两个 /k/ 需分别选择 C 和 K）' : '');
+}
+function audioFallback() {
+  caption.textContent = '语音暂不可用，请点“再看／再听”重试，或由老师读题：'
+    + targets.map(l => mode === 'listenName' ? l : DATA[l].word).join(' · ');
+}
+function playAudio() {
+  if (locked || !['listenName', 'listenSound'].includes(mode)) return;
+  stopAudio();
+  caption.textContent = mode === 'listenName'
+    ? `听 ${level} 个字母名，再选择字母`
+    : `听 ${level} 个英文单词，选择它们的首字母`;
+  if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+    audioFallback();
+    return;
+  }
+  const current = roundId, playback = audioId;
+  try {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+    const english = voices.filter(v => /^en([-_]|$)/i.test(v.lang));
+    const voice = english.find(v => v.localService && /^en[-_]GB/i.test(v.lang))
+      || english.find(v => v.localService) || english.find(v => /^en[-_]GB/i.test(v.lang)) || english[0];
+    if (voices.length && !voice) { audioFallback(); return; }
+    const utterance = new window.SpeechSynthesisUtterance(targets.map(l =>
+      mode === 'listenName' ? `Letter ${l}.` : `${DATA[l].word}.`
+    ).join(' '));
+    utterance.lang = voice ? voice.lang : 'en-GB';
+    utterance.rate = .72;
+    if (voice) utterance.voice = voice;
+    utterance.onerror = event => {
+      if (current === roundId && playback === audioId && !['canceled', 'interrupted'].includes(event.error)) audioFallback();
+    };
+    synth.speak(utterance);
+  } catch { audioFallback(); }
+}
+function replay() {
+  if (locked) return;
+  if (['listenName', 'listenSound'].includes(mode)) playAudio();
+  else render();
+}
+function updatePicked() { picked.textContent = `${selected.size}/${level}`; }
+function clearSelected() {
+  selected.clear();
+  document.querySelectorAll('.letter').forEach(b => {
+    b.classList.remove('selected');
+    b.setAttribute('aria-pressed', 'false');
+  });
+  updatePicked();
+}
+function toggle(letter, button) {
+  if (locked) return;
+  if (selected.has(letter)) selected.delete(letter);
+  else if (selected.size < level) selected.add(letter);
+  else { show(`最多选择 ${level} 个`, false, 550); return; }
+  button.classList.toggle('selected', selected.has(letter));
+  button.setAttribute('aria-pressed', String(selected.has(letter)));
+  updatePicked();
+}
+function show(text, ok = false, duration = 700) {
+  clearTimeout(messageId);
+  message.style.display = 'grid';
+  message.style.color = ok ? 'var(--green)' : 'var(--coral)';
+  message.textContent = text;
+  messageId = setTimeout(() => { message.style.display = 'none'; }, duration);
+}
+function isCorrect() {
+  if (selected.size !== level) return false;
+  if (mode !== 'sound') return targets.every(l => selected.has(l));
+  const sounds = values => Array.from(values, l => DATA[l].phoneme).sort().join('|');
+  return sounds(targets) === sounds(selected);
+}
+function check() {
+  if (locked) return;
+  if (selected.size !== level) { show(`还要选择 ${level - selected.size} 个`, false, 650); return; }
+  const correct = isCorrect(), current = roundId;
+  locked = true;
+  stopFlash();
+  stopAudio();
+  $('#checkBtn').disabled = true;
+  document.querySelectorAll('.letter').forEach(b => b.disabled = true);
+  if (correct) {
+    clearInterval(timerId);
+    show('YES!  ' + Array.from(selected).join(' · '), true, 900);
+    resultId = setTimeout(() => { if (current === roundId) next(); }, 900);
+  } else {
+    show('TRY AGAIN', false, 750);
+    resultId = setTimeout(() => {
+      if (current !== roundId) return;
+      clearSelected();
+      locked = false;
+      $('#checkBtn').disabled = false;
+      document.querySelectorAll('.letter').forEach(b => b.disabled = false);
+      if (mode === 'flash') hide();
+    }, 760);
+  }
+}
+function next() {
+  resetRound();
+  clearSelected();
+  targets = chooseTargets();
+  render();
+  const deadline = Date.now() + (5 + (level - 1) * 2) * 1000;
+  const tick = () => {
+    const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+    timer.textContent = String(remaining);
+    timer.title = remaining ? '课堂计时提示，归零后仍可作答' : '时间到，仍可继续作答';
+    timer.setAttribute('aria-label', remaining ? `剩余 ${remaining} 秒` : '时间到，仍可继续作答');
+    if (!remaining) clearInterval(timerId);
+  };
+  tick();
+  timerId = setInterval(tick, 200);
+}
+function addScore(team, delta) {
+  score[team] = Math.max(0, score[team] + delta);
+  $('#' + team + 'Score').textContent = String(score[team]);
+}
+document.querySelectorAll('.mode').forEach(b => b.onclick = () => setMode(b.dataset.mode));
+document.querySelectorAll('.level').forEach(b => b.onclick = () => setLevel(Number(b.dataset.level)));
+document.querySelectorAll('[data-team]').forEach(b => b.onclick = () => addScore(b.dataset.team, Number(b.dataset.delta)));
+$('#replayBtn').onclick = replay;
+$('#revealBtn').onclick = reveal;
+$('#checkBtn').onclick = check;
+$('#nextBtn').onclick = next;
+document.addEventListener('keydown', event => {
+  if (event.repeat || event.isComposing || event.ctrlKey || event.altKey || event.metaKey) return;
+  if (event.target && (event.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))) return;
+  if (event.code === 'Space') {
+    // Preserve native Space activation for the focused button.
+    if (event.target && event.target.closest && event.target.closest('button')) return;
+    event.preventDefault(); next(); return;
+  }
+  const key = event.key.toLowerCase();
+  if (key === 'p') { event.preventDefault(); replay(); }
+  if (key === 'q') addScore('red', 1);
+  if (key === 'w') addScore('blue', 1);
+});
+next();
+
+</script></body></html>
